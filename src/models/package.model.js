@@ -1,80 +1,31 @@
-const { DataTypes } = require('sequelize');
- const sequelize = require("../config/database");
-// Make sure your DB config is correct
+const { DataTypes } = require("sequelize");
+const sequelize = require("../config/database");
 
-const Package = sequelize.define('Package', {
+const Package = sequelize.define("package", {
   id: {
     type: DataTypes.BIGINT.UNSIGNED,
     primaryKey: true,
-    autoIncrement: true
+    autoIncrement: true,
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
-  description: DataTypes.TEXT,
-  invoice_description: DataTypes.TEXT,
-  service_type: DataTypes.INTEGER,
-  policy_group: DataTypes.STRING,
-  allocation_group: DataTypes.STRING,
-  extra_fee_group: DataTypes.STRING,
-  status: DataTypes.INTEGER,
-  reseller_status: DataTypes.INTEGER,
-  expiration_status: DataTypes.INTEGER,
-  invoice_status: DataTypes.INTEGER,
-  auto_invoice_generate_status: DataTypes.INTEGER,
-  auto_invoice_date: DataTypes.DATE,
-  self_activation_status: DataTypes.INTEGER,
-  leftover_days_status: DataTypes.INTEGER,
-  billing_type: DataTypes.INTEGER,
-  duration: DataTypes.INTEGER,
-  duration_type: DataTypes.INTEGER,
-  isp_id: DataTypes.INTEGER,
-  branch_id: DataTypes.INTEGER,
-  pool_type: DataTypes.INTEGER,
-  pool: DataTypes.STRING,
-  expired_pool: DataTypes.STRING,
-  next_expired_action_type: DataTypes.INTEGER,
-  next_disable_action_type: DataTypes.INTEGER,
-  next_package: DataTypes.INTEGER,
-  next_expired_package: DataTypes.INTEGER,
-  next_disable_package: DataTypes.INTEGER,
-  next_expired_policy: DataTypes.STRING,
-  next_disable_policy: DataTypes.STRING,
-  bandwidth: DataTypes.INTEGER,
-  bandwidth_type: DataTypes.INTEGER,
-  data_qt_status: DataTypes.INTEGER,
-  data_qt_vol: DataTypes.INTEGER,
-  data_qt_over_status: DataTypes.INTEGER,
-  data_qt_over_type: DataTypes.INTEGER,
-  data_fup_status: DataTypes.INTEGER,
-  data_fup_vol: DataTypes.INTEGER,
-  data_fup_bw_limit: DataTypes.STRING,
-  session_qt_status: DataTypes.INTEGER,
-  session_qt_time: DataTypes.INTEGER,
-  session_qt_over_status: DataTypes.INTEGER,
-  session_qt_over_type: DataTypes.INTEGER,
-  session_fup_status: DataTypes.INTEGER,
-  session_fup_vol: DataTypes.INTEGER,
-  session_fup_bw_limit: DataTypes.STRING,
-  fixed_expiry_day: DataTypes.INTEGER,
-  fixed_expiry_day_status: DataTypes.INTEGER,
-  fixed_expiry_day_acct_status: DataTypes.INTEGER,
-  fixed_expiry_day_acct_type: DataTypes.INTEGER,
-  fixed_expiry_time: DataTypes.STRING,
-  fixed_expiry_time_status: DataTypes.INTEGER,
-  auto_renew_status: DataTypes.INTEGER,
-  auto_payment_status: DataTypes.INTEGER,
-  custom_expiry_status: DataTypes.INTEGER,
-  custom_expiry_type: DataTypes.INTEGER,
-  allow_captive_portal: DataTypes.INTEGER,
-  created_by: DataTypes.INTEGER,
-  updated_by: DataTypes.INTEGER,
-  created_at: DataTypes.DATE,
-  updated_at: DataTypes.DATE
+  data_qt_vol: { // FUP
+    type: DataTypes.INTEGER,
+  },
+  data_fup_vol: { // optional FUP
+    type: DataTypes.INTEGER,
+  },
+  created_at: {
+    type: DataTypes.DATE,
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+  },
 }, {
-  tableName: 'packages',
-  timestamps: false
+  tableName: "packages",
+  timestamps: false,
 });
 
 module.exports = Package;

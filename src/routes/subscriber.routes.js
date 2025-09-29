@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/subscriber.controller");
 
-// GET all
+// GET all subscribers
 router.get("/", controller.getAll);
 
-// GET by ID
+// GET subscriber by ID
 router.get("/:id", controller.getById);
 
 module.exports = router;
