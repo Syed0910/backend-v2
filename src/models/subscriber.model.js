@@ -80,6 +80,10 @@ const Subscriber = sequelize.define(
     signup_source: { type: DataTypes.INTEGER },
     created_at: { type: DataTypes.DATE },
     updated_at: { type: DataTypes.DATE },
+    installation_address: { type: DataTypes.STRING(100) },
+    dob: { type: DataTypes.DATE },
+    gender: { type: DataTypes.STRING(100) },
+    cpe_ip_address: { type: DataTypes.STRING(100) },
     // Add other fields here if needed
   },
   {
