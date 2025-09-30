@@ -1,63 +1,56 @@
-const Package = require('../models/package.model');
+const Package = require("../models/package.model");
 
-// GET all packages
+// Get all packages
 exports.getAllPackages = async (req, res) => {
   try {
     const packages = await Package.findAll();
-    res.json(packages);
+    res.json({ success: true, data: packages });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// GET package by ID
+// Get package by ID
 exports.getPackageById = async (req, res) => {
   try {
     const pkg = await Package.findByPk(req.params.id);
-    if (!pkg) return res.status(404).json({ error: 'Package not found' });
-    res.json(pkg);
+    if (!pkg) return res.status(404).json({ success: false, message: "Package not found" });
+    res.json({ success: true, data: pkg });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// CREATE new package
+// Create package
 exports.createPackage = async (req, res) => {
   try {
     const newPackage = await Package.create(req.body);
-    res.status(201).json(newPackage);
+    res.status(201).json({ success: true, data: newPackage });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// UPDATE package by ID
+// Update package
 exports.updatePackage = async (req, res) => {
   try {
     const pkg = await Package.findByPk(req.params.id);
-    if (!pkg) return res.status(404).json({ error: 'Package not found' });
-
+    if (!pkg) return res.status(404).json({ success: false, message: "Package not found" });
     await pkg.update(req.body);
-    res.json(pkg);
+    res.json({ success: true, data: pkg });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
 
-// DELETE package by ID
+// Delete package
 exports.deletePackage = async (req, res) => {
   try {
     const pkg = await Package.findByPk(req.params.id);
-    if (!pkg) return res.status(404).json({ error: 'Package not found' });
-
+    if (!pkg) return res.status(404).json({ success: false, message: "Package not found" });
     await pkg.destroy();
-    res.json({ message: 'Package deleted successfully' });
+    res.json({ success: true, message: "Package deleted" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ success: false, message: err.message });
   }
 };
