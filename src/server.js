@@ -14,7 +14,12 @@ const sequelize = require("./config/database"); // Sequelize DB connection
 const subscriberRoutes = require("./routes/subscriber.routes");
 const packageRoutes = require("./routes/package.routes");
 const radacctRoutes = require("./routes/radacct.routes");
+
+const ledgerRoutes = require("./routes/Ledger.routes");
+const radpostauthRoutes = require("./routes/radpostauth.routes");
+
 const nasRoutes = require("./routes/nas.routes"); // NAS routes
+
 
 // ------------------------- Initialize App ------------------------
 const app = express();
@@ -47,6 +52,8 @@ app.use("/api/packages", packageRoutes);
 
 // Radacct endpoints
 app.use("/api/radacct", radacctRoutes);
+app.use("/api/ledgers", ledgerRoutes);
+app.use("/api/radpostauth",radpostauthRoutes );
 
 // NAS CRUD endpoints
 app.use("/api/nas", nasRoutes);
