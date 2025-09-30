@@ -7,6 +7,8 @@ const sequelize = require("./config/database");
 const subscriberRoutes = require("./routes/subscriber.routes");
 const packageRoutes = require("./routes/package.routes");
 const radacctRoutes = require("./routes/radacct.routes");
+const ledgerRoutes = require("./routes/Ledger.routes");
+const radpostauthRoutes = require("./routes/radpostauth.routes");
 
 const app = express();
 
@@ -29,6 +31,8 @@ app.get("/api/health", (req, res) => {
 app.use("/api/subscribers", subscriberRoutes);
 app.use("/api/packages", packageRoutes);
 app.use("/api/radacct", radacctRoutes);
+app.use("/api/ledgers", ledgerRoutes);
+app.use("/api/radpostauth",radpostauthRoutes );
 
 // 404 route for undefined endpoints
 app.use((req, res) => {
