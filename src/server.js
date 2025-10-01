@@ -2,24 +2,13 @@
  * Entry point for the Express backend API
  * ---------------------------------------
  * This server connects to the MySQL database using Sequelize
- * and exposes API routes for subscribers, packages, radacct, and NAS.
+ * and exposes API routes for subscribers, packages, users, NAS, etc.
  */
 
 require("dotenv").config(); // Load environment variables from .env
 const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database"); // Sequelize DB connection
-
-// ------------------------- Import Routes -------------------------
-const subscriberRoutes = require("./routes/subscriber.routes");
-const packageRoutes = require("./routes/package.routes");
-const radacctRoutes = require("./routes/radacct.routes");
-
-const ledgerRoutes = require("./routes/Ledger.routes");
-const radpostauthRoutes = require("./routes/radpostauth.routes");
-
-const nasRoutes = require("./routes/nas.routes"); // NAS routes
-
 
 // ------------------------- Initialize App ------------------------
 const app = express();
@@ -31,24 +20,22 @@ app.use(express.json());
 // Configure CORS to allow requests from frontend
 app.use(
   cors({
-    origin: "http://localhost:5173", // Frontend URL
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // configurable frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
 );
 
 // ------------------------- Health Check -------------------------
-// Simple endpoint to check if API is running
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "API is healthy" });
 });
 
-// Routes
-// Routes
+// ------------------------- Routes -------------------------------
 app.use("/api/subscribers", require("./routes/subscriber.routes"));
 app.use("/api/packages", require("./routes/package.routes"));
 app.use("/api/radacct", require("./routes/radacct.routes"));
-app.use("/api/accounts", require("./routes/account.routes")); 
+app.use("/api/accounts", require("./routes/account.routes"));
 app.use("/api/activation-extra-fees", require("./routes/activationExtraFee.routes"));
 app.use("/api/activation-records", require("./routes/activationRecord.routes"));
 app.use("/api/activity-log", require("./routes/activityLog.routes"));
@@ -84,27 +71,13 @@ app.use("/api/jobs", require("./routes/job.routes"));
 app.use("/api/migrations", require("./routes/migration.routes"));
 app.use("/api/ledgers", require("./routes/Ledger.routes"));
 app.use("/api/radpostauth", require("./routes/radpostauth.routes"));
-
-// NAS CRUD endpoints
+app.use("/api/radgroupcheck", require("./routes/radgroupcheck.routes"));
 app.use("/api/nas", require("./routes/nas.routes"));
 
 
+app.use("/api/users", require("./routes/user.routes")); // ✅ Users CRUD API
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ------------------------- Start Server -------------------------
 const startServer = async () => {
   try {
     // Test DB connection
@@ -112,9 +85,8 @@ const startServer = async () => {
     console.log("✅ Database connected");
 
     // Sync models
-    // - In development, use alter:true to auto-update tables
     if (process.env.NODE_ENV === "development") {
-      await sequelize.sync({ alter: true });
+      await sequelize.sync({ alter: true }); // auto-update in dev
       console.log("✅ Models synced (development mode)");
     } else {
       await sequelize.sync();
