@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const sequelize = require("../config/database"); // your Sequelize config
 
 const Subscriber = sequelize.define(
   "Subscriber",
@@ -12,7 +12,7 @@ const Subscriber = sequelize.define(
     connection_password: { type: DataTypes.STRING },
     identity: { type: DataTypes.STRING },
     phone: { type: DataTypes.STRING, allowNull: false },
-    email: { type: DataTypes.STRING(100), allowNull: false, unique: true },
+    email: { type: DataTypes.STRING, allowNull: false, unique: true },
     email_verified_at: { type: DataTypes.DATE },
     address: { type: DataTypes.STRING },
     photo: { type: DataTypes.STRING },
@@ -71,44 +71,24 @@ const Subscriber = sequelize.define(
     created_datetime: { type: DataTypes.DATE },
     last_login_time: { type: DataTypes.DATE },
     last_activation_time: { type: DataTypes.DATE },
-    auto_renew_last_activation_date: { type: DataTypes.DATE },
-    last_activated_by_id: { type: DataTypes.INTEGER },
-    lock_volume_status: { type: DataTypes.INTEGER },
-    total_data_quota: { type: DataTypes.INTEGER },
-    used_data_quota: { type: DataTypes.INTEGER },
-    used_data_collect_time: { type: DataTypes.DATE },
-    lock_session_status: { type: DataTypes.INTEGER },
-    total_session_quota: { type: DataTypes.INTEGER },
-    used_session_quota: { type: DataTypes.INTEGER },
-    used_session_collect_time: { type: DataTypes.DATE },
-    last_interim_update: { type: DataTypes.DATE },
     expiration_date: { type: DataTypes.DATE },
-    last_expiration_date: { type: DataTypes.DATE },
     discount_type: { type: DataTypes.INTEGER },
     discount: { type: DataTypes.DOUBLE(8, 2) },
     addition: { type: DataTypes.DOUBLE(8, 2) },
     subtraction: { type: DataTypes.DOUBLE(8, 2) },
     remember_token: { type: DataTypes.STRING(100) },
     signup_source: { type: DataTypes.INTEGER },
-    expired_sms_status: { type: DataTypes.INTEGER },
-    expired_email_status: { type: DataTypes.INTEGER },
-    expiring_1day_sms_status: { type: DataTypes.INTEGER },
-    expiring_3days_sms_status: { type: DataTypes.INTEGER },
-    expiring_7days_sms_status: { type: DataTypes.INTEGER },
-    expiring_1day_email_status: { type: DataTypes.INTEGER },
-    expiring_3days_email_status: { type: DataTypes.INTEGER },
-    expiring_7days_email_status: { type: DataTypes.INTEGER },
-    grace_period_status: { type: DataTypes.INTEGER },
-    grace_period_start_date: { type: DataTypes.DATE },
-    grace_period_end_date: { type: DataTypes.DATE },
-    join_date: { type: DataTypes.DATE },
-    onu_note: { type: DataTypes.STRING },
     created_at: { type: DataTypes.DATE },
     updated_at: { type: DataTypes.DATE },
+    installation_address: { type: DataTypes.STRING(100) },
+    dob: { type: DataTypes.DATE },
+    gender: { type: DataTypes.STRING(100) },
+    cpe_ip_address: { type: DataTypes.STRING(100) },
+    // Add other fields here if needed
   },
   {
     tableName: "subscribers",
-    timestamps: false,
+    timestamps: false, // because you have custom timestamps
   }
 );
 

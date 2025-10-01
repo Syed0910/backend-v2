@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/subscriber.controller");
+const subscriberController = require("../controllers/subscriber.controller");
 
-// GET all
-router.get("/", controller.getAll);
-
-// GET by ID
-router.get("/:id", controller.getById);
+router.post("/", subscriberController.createSubscriber); // create
+router.get("/", subscriberController.getAllSubscribers); // read all
+router.get("/:id", subscriberController.getSubscriberById); // read one
+router.put("/:id", subscriberController.updateSubscriber); // update
+router.delete("/:id", subscriberController.deleteSubscriber); // delete
 
 module.exports = router;

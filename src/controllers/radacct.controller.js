@@ -23,6 +23,23 @@ exports.getRadacctById = async (req, res) => {
   }
 };
 
+// ✅ GET latest radacct record by username
+exports.getLatestRadacctByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const record = await Radacct.findOne({
+      where: { username },
+      order: [["acctstarttime", "DESC"]] // or ["radacctid", "DESC"]
+    });
+
+    if (!record) return res.status(404).json({ error: 'No session found for this user' });
+    res.json(record);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 // CREATE new radacct record
 exports.createRadacct = async (req, res) => {
   try {
