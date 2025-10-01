@@ -82,6 +82,11 @@ app.use("/api/ip-pools", require("./routes/ipPool.routes"));
 app.use("/api/isps", require("./routes/isp.routes"));
 app.use("/api/jobs", require("./routes/job.routes"));
 app.use("/api/migrations", require("./routes/migration.routes"));
+app.use("/api/ledgers", require("./routes/Ledger.routes"));
+app.use("/api/radpostauth", require("./routes/radpostauth.routes"));
+
+// NAS CRUD endpoints
+app.use("/api/nas", require("./routes/nas.routes"));
 
 
 
@@ -100,9 +105,10 @@ app.use("/api/migrations", require("./routes/migration.routes"));
 
 
 
-// DB Connection & Server Start
-sequelize.authenticate()
-  .then(() => {
+const startServer = async () => {
+  try {
+    // Test DB connection
+    await sequelize.authenticate();
     console.log("✅ Database connected");
 
     // Sync models
