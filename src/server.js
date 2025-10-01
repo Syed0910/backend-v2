@@ -84,6 +84,61 @@ app.use("/api/jobs", require("./routes/job.routes"));
 app.use("/api/migrations", require("./routes/migration.routes"));
 app.use("/api/ledgers", require("./routes/Ledger.routes"));
 app.use("/api/radpostauth", require("./routes/radpostauth.routes"));
+app.use("/api/model-has-permissions", require("./routes/modelHasPermission.routes"));
+app.use("/api/model-has-roles", require("./routes/modelHasRole.routes"));
+app.use("/api/nas-details", require("./routes/nasDetails.routes"));
+app.use("/api/nas-groups", require("./routes/nasGroups.routes"));
+app.use("/api/notices", require("./routes/notice.routes"));
+app.use("/api/otps", require("./routes/otp.routes"));
+app.use("/api/package-accounting", require("./routes/packageAccounting.routes"))
+app.use("/api/package-extra-fees", require("./routes/packageExtraFee.routes"));
+app.use("/api/password-reset-tokens", require("./routes/passwordResetToken.routes"));
+app.use("/api/payments", require("./routes/payments.routes"));
+app.use("/api/permissions", require("./routes/permissions.routes"));
+app.use("/api/personal-access-tokens", require("./routes/personalAccessToken.routes"));
+app.use("/api/pgw-transactions", require("./routes/pgwTransaction.routes"));
+app.use("/api/predictions", require("./routes/prediction.routes"));
+app.use("/api/prepaid-cards", require("./routes/prepaidCard.routes"));
+app.use("/api/prepaid-vouchers", require("./routes/prepaidVoucher.routes"));
+app.use("/api/radacct-archive", require("./routes/radacctArchive.routes"));
+app.use("/api/radcheck", require("./routes/radcheck.routes"));
+app.use("/api/radpostauth-archive", require("./routes/radpostauthArchive.routes"));
+app.use("/api/radreply", require("./routes/radreply.routes"));
+app.use("/api/radusergroup", require("./routes/radusergroup.routes"));
+app.use("/api/reseller_distributions", require("./routes/reseller_distribution.routes"));
+app.use("/api/restricted_connections", require("./routes/restricted_connection.routes"));
+app.use("/api/role-permissions", require("./routes/roleHasPermission.routes"));
+app.use("/api/roles", require("./routes/role.routes"));
+app.use("/api/sessions", require("./routes/session.routes"));
+app.use("/api/settings", require("./routes/settings.routes"));
+app.use("/api/sms_deliveries", require("./routes/smsDeliveries.routes"));
+app.use("/api/sms_post_settings", require("./routes/smsPostSettings.routes"));
+app.use("/api/sms_templates", require("./routes/smsTemplates.routes"));
+app.use("/api/subscriber_mac_addresses", require("./routes/subscriberMacAddress.routes"));
+app.use("/api/subscriber-macaddresses", require("./routes/subscriberMacaddresses.routes"));
+app.use("/api/subscriber-services", require("./routes/subscriberServices.routes"));
+app.use("/api/team-invitations", require("./routes/teamInvitation.routes"));
+app.use("/api/team-user", require("./routes/teamUser.routes"));
+app.use("/api/teams", require("./routes/team.routes"));
+app.use("/api/third-party-invoices", require("./routes/thirdPartyInvoice.routes"));
+app.use("/api/ticket-categories", require("./routes/ticketCategory.routes"));
+app.use("/api/ticket-notes", require("./routes/ticketNote.routes"));
+app.use("/api/ticket-replies", require("./routes/ticketReply.routes"));
+app.use("/api/tickets", require("./routes/ticket.routes"));
+app.use("/api/vendor-notices", require("./routes/vendorNotice.routes"));
+app.use("/api/voucher-cards", require("./routes/voucherCard.routes"));
+app.use("/api/vouchers", require("./routes/vouchers.routes"));
+
+
+
+
+
+
+
+
+
+
+
 
 // NAS CRUD endpoints
 app.use("/api/nas", require("./routes/nas.routes"));
