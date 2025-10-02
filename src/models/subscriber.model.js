@@ -78,18 +78,36 @@ const Subscriber = sequelize.define(
     subtraction: { type: DataTypes.DOUBLE(8, 2) },
     remember_token: { type: DataTypes.STRING(100) },
     signup_source: { type: DataTypes.INTEGER },
-    created_at: { type: DataTypes.DATE },
-    updated_at: { type: DataTypes.DATE },
     installation_address: { type: DataTypes.STRING(100) },
     dob: { type: DataTypes.DATE },
     gender: { type: DataTypes.STRING(100) },
     cpe_ip_address: { type: DataTypes.STRING(100) },
-    // Add other fields here if needed
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    join_date: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
   },
   {
     tableName: "subscribers",
-    timestamps: false, // because you have custom timestamps
+    timestamps: false, // disable default Sequelize timestamps
+    hooks: {
+      beforeUpdate: (subscriber) => {
+        subscriber.updated_at = new Date(); // automatically update updated_at
+      },
+    },
   }
 );
 
 module.exports = Subscriber;
+        
