@@ -2,13 +2,29 @@
  * Entry point for the Express backend API
  * ---------------------------------------
  * This server connects to the MySQL database using Sequelize
- * and exposes API routes for subscribers, packages, radacct, and NAS.
+ * and exposes API routes for subscribers, packages, users, NAS, etc.
  */
 
 require("dotenv").config(); // Load environment variables from .env
 const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database"); // Sequelize DB connection
+
+// ------------------------- Initialize App ------------------------
+const app = express();
+
+// ------------------------- Middleware ---------------------------
+// Parse JSON request bodies
+app.use(express.json());
+
+// Configure CORS to allow requests from frontend
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // configurable frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
 // ------------------------- Import Routes -------------------------
 const subscriberRoutes = require("./routes/subscriber.routes");
@@ -21,34 +37,19 @@ const radpostauthRoutes = require("./routes/radpostauth.routes");
 const nasRoutes = require("./routes/nas.routes"); // NAS routes
 
 
-// ------------------------- Initialize App ------------------------
-const app = express();
-
-// ------------------------- Middleware ---------------------------
-// Parse JSON request bodies
-app.use(express.json());
-
-// Configure CORS to allow requests from frontend
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Frontend URL
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
 
 // ------------------------- Health Check -------------------------
-// Simple endpoint to check if API is running
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "API is healthy" });
 });
 
-// Routes
-// Routes
+
+// ------------------------- Routes -------------------------------
+
 app.use("/api/subscribers", require("./routes/subscriber.routes"));
 app.use("/api/packages", require("./routes/package.routes"));
 app.use("/api/radacct", require("./routes/radacct.routes"));
-app.use("/api/accounts", require("./routes/account.routes")); 
+app.use("/api/accounts", require("./routes/account.routes"));
 app.use("/api/activation-extra-fees", require("./routes/activationExtraFee.routes"));
 app.use("/api/activation-records", require("./routes/activationRecord.routes"));
 app.use("/api/activity-log", require("./routes/activityLog.routes"));
@@ -84,26 +85,56 @@ app.use("/api/jobs", require("./routes/job.routes"));
 app.use("/api/migrations", require("./routes/migration.routes"));
 app.use("/api/ledgers", require("./routes/Ledger.routes"));
 app.use("/api/radpostauth", require("./routes/radpostauth.routes"));
-
-// NAS CRUD endpoints
+app.use("/api/radgroupcheck", require("./routes/radgroupcheck.routes"));
+app.use("/api/model-has-permissions", require("./routes/modelHasPermission.routes"));
+app.use("/api/model-has-roles", require("./routes/modelHasRole.routes"));
+app.use("/api/nas-details", require("./routes/nasDetails.routes"));
+app.use("/api/nas-groups", require("./routes/nasGroups.routes"));
+app.use("/api/notices", require("./routes/notice.routes"));
+app.use("/api/otps", require("./routes/otp.routes"));
+app.use("/api/package-accounting", require("./routes/packageAccounting.routes"))
+app.use("/api/package-extra-fees", require("./routes/packageExtraFee.routes"));
+app.use("/api/password-reset-tokens", require("./routes/passwordResetToken.routes"));
+app.use("/api/payments", require("./routes/payments.routes"));
+app.use("/api/permissions", require("./routes/permissions.routes"));
+app.use("/api/personal-access-tokens", require("./routes/personalAccessToken.routes"));
+app.use("/api/pgw-transactions", require("./routes/pgwTransaction.routes"));
+app.use("/api/predictions", require("./routes/prediction.routes"));
+app.use("/api/prepaid-cards", require("./routes/prepaidCard.routes"));
+app.use("/api/prepaid-vouchers", require("./routes/prepaidVoucher.routes"));
+app.use("/api/radacct-archive", require("./routes/radacctArchive.routes"));
+app.use("/api/radcheck", require("./routes/radcheck.routes"));
+app.use("/api/radpostauth-archive", require("./routes/radpostauthArchive.routes"));
+app.use("/api/radreply", require("./routes/radreply.routes"));
+app.use("/api/radusergroup", require("./routes/radusergroup.routes"));
+app.use("/api/reseller_distributions", require("./routes/reseller_distribution.routes"));
+app.use("/api/restricted_connections", require("./routes/restricted_connection.routes"));
+app.use("/api/role-permissions", require("./routes/roleHasPermission.routes"));
+app.use("/api/roles", require("./routes/role.routes"));
+app.use("/api/sessions", require("./routes/session.routes"));
+app.use("/api/settings", require("./routes/settings.routes"));
+app.use("/api/sms_deliveries", require("./routes/smsDeliveries.routes"));
+app.use("/api/sms_post_settings", require("./routes/smsPostSettings.routes"));
+app.use("/api/sms_templates", require("./routes/smsTemplates.routes"));
+app.use("/api/subscriber_mac_addresses", require("./routes/subscriberMacAddress.routes"));
+app.use("/api/subscriber-macaddresses", require("./routes/subscriberMacaddresses.routes"));
+app.use("/api/subscriber-services", require("./routes/subscriberServices.routes"));
+app.use("/api/team-invitations", require("./routes/teamInvitation.routes"));
+app.use("/api/team-user", require("./routes/teamUser.routes"));
+app.use("/api/teams", require("./routes/team.routes"));
+app.use("/api/third-party-invoices", require("./routes/thirdPartyInvoice.routes"));
+app.use("/api/ticket-categories", require("./routes/ticketCategory.routes"));
+app.use("/api/ticket-notes", require("./routes/ticketNote.routes"));
+app.use("/api/ticket-replies", require("./routes/ticketReply.routes"));
+app.use("/api/tickets", require("./routes/ticket.routes"));
+app.use("/api/vendor-notices", require("./routes/vendorNotice.routes"));
+app.use("/api/voucher-cards", require("./routes/voucherCard.routes"));
+app.use("/api/vouchers", require("./routes/vouchers.routes"));
 app.use("/api/nas", require("./routes/nas.routes"));
+app.use("/api/radgroupreply", require("./routes/radGroupReply.routes"));
+app.use("/api/users", require("./routes/user.routes")); // ✅ Users CRUD API
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ------------------------- Start Server -------------------------
 
 const startServer = async () => {
   try {
@@ -112,9 +143,8 @@ const startServer = async () => {
     console.log("✅ Database connected");
 
     // Sync models
-    // - In development, use alter:true to auto-update tables
     if (process.env.NODE_ENV === "development") {
-      await sequelize.sync({ alter: true });
+      await sequelize.sync({ alter: true }); // auto-update in dev
       console.log("✅ Models synced (development mode)");
     } else {
       await sequelize.sync();
