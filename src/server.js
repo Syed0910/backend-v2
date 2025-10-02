@@ -9,18 +9,6 @@ require("dotenv").config(); // Load environment variables from .env
 const express = require("express");
 const cors = require("cors");
 const sequelize = require("./config/database"); // Sequelize DB connection
-
-// ------------------------- Import Routes -------------------------
-const subscriberRoutes = require("./routes/subscriber.routes");
-const packageRoutes = require("./routes/package.routes");
-const radacctRoutes = require("./routes/radacct.routes");
-
-const ledgerRoutes = require("./routes/Ledger.routes");
-const radpostauthRoutes = require("./routes/radpostauth.routes");
-
-const nasRoutes = require("./routes/nas.routes"); // NAS routes
-
-
 // ------------------------- Initialize App ------------------------
 const app = express();
 
@@ -37,13 +25,25 @@ app.use(
   })
 );
 
+// ------------------------- Import Routes -------------------------
+const subscriberRoutes = require("./routes/subscriber.routes");
+const packageRoutes = require("./routes/package.routes");
+const radacctRoutes = require("./routes/radacct.routes");
+
+const ledgerRoutes = require("./routes/Ledger.routes");
+const radpostauthRoutes = require("./routes/radpostauth.routes");
+
+const nasRoutes = require("./routes/nas.routes"); // NAS routes
+
+
+
 // ------------------------- Health Check -------------------------
 // Simple endpoint to check if API is running
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "API is healthy" });
 });
 
-// Routes
+
 // Routes
 app.use("/api/subscribers", require("./routes/subscriber.routes"));
 app.use("/api/packages", require("./routes/package.routes"));
@@ -128,21 +128,8 @@ app.use("/api/tickets", require("./routes/ticket.routes"));
 app.use("/api/vendor-notices", require("./routes/vendorNotice.routes"));
 app.use("/api/voucher-cards", require("./routes/voucherCard.routes"));
 app.use("/api/vouchers", require("./routes/vouchers.routes"));
-
-
-
-
-
-
-
-
-
-
-
-
-// NAS CRUD endpoints
 app.use("/api/nas", require("./routes/nas.routes"));
-
+app.use("/api/radgroupreply", require("./routes/radGroupReply.routes"));
 
 
 
