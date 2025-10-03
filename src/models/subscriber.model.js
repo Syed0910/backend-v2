@@ -1,13 +1,18 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database"); // your Sequelize config
+const sequelize = require("../config/database"); // Sequelize config
 
 const Subscriber = sequelize.define(
   "Subscriber",
   {
-    id: { type: DataTypes.BIGINT.UNSIGNED, autoIncrement: true, primaryKey: true },
+    id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      autoIncrement: true,
+      primaryKey: true,
+    },
     fullname: { type: DataTypes.STRING, allowNull: false },
     username: { type: DataTypes.STRING, allowNull: false, unique: true },
     password: { type: DataTypes.STRING, allowNull: false },
+
     connection_username: { type: DataTypes.STRING },
     connection_password: { type: DataTypes.STRING },
     identity: { type: DataTypes.STRING },
@@ -16,20 +21,25 @@ const Subscriber = sequelize.define(
     email_verified_at: { type: DataTypes.DATE },
     address: { type: DataTypes.STRING },
     photo: { type: DataTypes.STRING },
+
     salesperson_id: { type: DataTypes.INTEGER, allowNull: false },
     package_id: { type: DataTypes.INTEGER, allowNull: false },
     secondary_package_id: { type: DataTypes.INTEGER },
+
     country: { type: DataTypes.STRING },
     province: { type: DataTypes.STRING},
     city: { type: DataTypes.STRING },
     area: { type: DataTypes.STRING },
     subarea: { type: DataTypes.STRING },
+
     latitude: { type: DataTypes.STRING },
     longitude: { type: DataTypes.STRING },
     department: { type: DataTypes.INTEGER },
     area_group: { type: DataTypes.STRING },
     isp_id: { type: DataTypes.INTEGER },
     branch_id: { type: DataTypes.INTEGER },
+
+    // ----- statuses -----
     otp_status: { type: DataTypes.INTEGER },
     invoice_status: { type: DataTypes.INTEGER },
     self_registration_status: { type: DataTypes.INTEGER },
@@ -47,6 +57,8 @@ const Subscriber = sequelize.define(
     auto_payment_status: { type: DataTypes.INTEGER },
     auto_renew_status: { type: DataTypes.INTEGER },
     mac_lock_status: { type: DataTypes.INTEGER },
+
+    // ----- networking -----
     mac_address: { type: DataTypes.STRING },
     static_ip_status: { type: DataTypes.INTEGER },
     ip_pool_id: { type: DataTypes.INTEGER },
@@ -57,6 +69,8 @@ const Subscriber = sequelize.define(
     connection_type: { type: DataTypes.INTEGER },
     connection_status: { type: DataTypes.INTEGER, defaultValue: 1 },
     service_type: { type: DataTypes.INTEGER },
+
+    // ----- infra -----
     box_number: { type: DataTypes.STRING },
     box_address: { type: DataTypes.STRING },
     uplink_port: { type: DataTypes.STRING },
@@ -67,21 +81,30 @@ const Subscriber = sequelize.define(
     backup_connection: { type: DataTypes.STRING },
     electric_socket: { type: DataTypes.STRING },
     cable_type: { type: DataTypes.STRING },
+
+    // ----- audit -----
     created_by_id: { type: DataTypes.INTEGER },
     created_datetime: { type: DataTypes.DATE },
     last_login_time: { type: DataTypes.DATE },
     last_activation_time: { type: DataTypes.DATE },
     expiration_date: { type: DataTypes.DATE },
+
+    // ----- billing -----
     discount_type: { type: DataTypes.INTEGER },
     discount: { type: DataTypes.DOUBLE(8, 2) },
     addition: { type: DataTypes.DOUBLE(8, 2) },
     subtraction: { type: DataTypes.DOUBLE(8, 2) },
+
     remember_token: { type: DataTypes.STRING(100) },
     signup_source: { type: DataTypes.INTEGER },
     installation_address: { type: DataTypes.STRING(100) },
+
+    // ----- profile -----
     dob: { type: DataTypes.DATE },
     gender: { type: DataTypes.STRING(100) },
     cpe_ip_address: { type: DataTypes.STRING(100) },
+
+    // ----- timestamps -----
     created_at: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -100,14 +123,18 @@ const Subscriber = sequelize.define(
   },
   {
     tableName: "subscribers",
-    timestamps: false, // disable default Sequelize timestamps
+    timestamps: false, // use custom columns instead of Sequelize defaults
     hooks: {
+      beforeCreate: (subscriber) => {
+        subscriber.created_at = new Date();
+        subscriber.updated_at = new Date();
+        subscriber.join_date = subscriber.join_date || new Date();
+      },
       beforeUpdate: (subscriber) => {
-        subscriber.updated_at = new Date(); // automatically update updated_at
+        subscriber.updated_at = new Date();
       },
     },
   }
 );
 
 module.exports = Subscriber;
-        

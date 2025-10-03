@@ -37,6 +37,7 @@ exports.getSubscriberById = async (req, res) => {
 // Update subscriber by ID
 exports.updateSubscriber = async (req, res) => {
   try {
+    console.log("REQ BODY:", req.body);
     const [updated] = await Subscriber.update(req.body, { where: { id: req.params.id } });
     if (!updated) return res.status(404).json({ message: "Subscriber not found" });
     const updatedSubscriber = await Subscriber.findByPk(req.params.id);
