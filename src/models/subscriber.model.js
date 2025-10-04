@@ -27,11 +27,11 @@ const Subscriber = sequelize.define(
     secondary_package_id: { type: DataTypes.INTEGER },
 
     // ----- location / ISP -----
-    country: { type: DataTypes.INTEGER },
-    province: { type: DataTypes.INTEGER },
-    city: { type: DataTypes.INTEGER },
-    area: { type: DataTypes.INTEGER },
-    subarea: { type: DataTypes.INTEGER },
+    country: { type: DataTypes.STRING },
+    state: { type: DataTypes.STRING },
+    city: { type: DataTypes.STRING },
+    area: { type: DataTypes.STRING },
+    subarea: { type: DataTypes.STRING },
     latitude: { type: DataTypes.STRING },
     longitude: { type: DataTypes.STRING },
     department: { type: DataTypes.INTEGER },
