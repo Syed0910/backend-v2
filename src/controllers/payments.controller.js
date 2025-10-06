@@ -18,6 +18,26 @@ exports.getById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.getBySubscriberId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Fetch all invoices for this subscriber
+    const payment = await Payment.findAll({
+      where: { payer_id :id},
+      order: [["created_at", "DESC"]], // optional: newest first
+    });
+
+    if (!payment || payment.length === 0) {
+      return res.status(404).json({ message: "No payments found for this subscriber" });
+    }
+
+    res.json(payment);
+  } catch (err) {
+    console.error("Error fetching payment:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 
 exports.create = async (req, res) => {
   try {

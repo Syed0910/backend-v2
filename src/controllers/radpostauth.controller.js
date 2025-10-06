@@ -1,12 +1,17 @@
 const Radpostauth = require('../models/Radpostauth.model');
 const { Op } = require('sequelize');
 
-// GET all records
+// ✅ GET all records (with optional ?limit=100)
 exports.getAllRadpostauth = async (req, res) => {
   try {
+    // If frontend sends ?limit=100 → only fetch latest 100 entries
+    const limit = parseInt(req.query.limit, 10) || null;
+
     const records = await Radpostauth.findAll({
-      order: [['authdate', 'DESC']] // latest first (optional)
+      order: [['authdate', 'DESC']], // latest first
+      ...(limit ? { limit } : {}),   // apply limit only if provided
     });
+
     res.json(records);
   } catch (err) {
     console.error('Error fetching radpostauth:', err);
@@ -14,13 +19,13 @@ exports.getAllRadpostauth = async (req, res) => {
   }
 };
 
-// GET all records by ID
+// ✅ GET records by ID
 exports.getRadpostauthById = async (req, res) => {
   try {
     const { id } = req.params;
 
     const records = await Radpostauth.findAll({
-      where: { id }
+      where: { id },
     });
 
     if (!records.length) {
@@ -34,7 +39,7 @@ exports.getRadpostauthById = async (req, res) => {
   }
 };
 
-// GET all records by username
+// ✅ GET records by username
 exports.getRadpostauthByUsername = async (req, res) => {
   try {
     const { username } = req.params;
@@ -44,7 +49,7 @@ exports.getRadpostauthByUsername = async (req, res) => {
 
     const records = await Radpostauth.findAll({
       where: { username },
-      order: [['authdate', 'DESC']]
+      order: [['authdate', 'DESC']],
     });
 
     if (!records.length) {
