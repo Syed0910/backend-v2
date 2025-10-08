@@ -19,6 +19,23 @@ exports.getById = async (req, res) => {
   }
 };
 
+exports.getByPackageId = async (req, res) => {
+  try {
+    const record = await PackageAccounting.findOne({
+      where: { package_id: req.params.id },  // ✅ query using package_id
+    });
+
+    if (!record) {
+      return res.status(404).json({ message: "Record not found" });
+    }
+
+    res.json(record);
+  } catch (err) {
+    console.error("Error fetching PackageAccounting by package_id:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.create = async (req, res) => {
   try {
     const record = await PackageAccounting.create(req.body);

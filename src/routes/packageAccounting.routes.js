@@ -4,6 +4,7 @@ const controller = require("../controllers/packageAccounting.controller");
 
 router.get("/", controller.getAll);
 router.get("/:id", controller.getById);
+router.get("/packageid/:id", controller.getByPackageId);
 router.post("/", controller.create);
 router.put("/:id", controller.update);
 router.delete("/:id", controller.remove);
