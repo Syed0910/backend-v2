@@ -1,51 +1,62 @@
-const Setting = require("../models/settings.model");
+const SmsPostSettings = require("../models/smsPostSettings.model");
 
-exports.getAllSettings = async (req, res) => {
+/* -------------------- GET ALL -------------------- */
+exports.getAllSmsPostSettings = async (req, res) => {
   try {
-    const settings = await Setting.findAll();
-    res.json(settings);
+    const settings = await SmsPostSettings.find();
+    res.status(200).json(settings);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Failed to fetch settings", error });
   }
 };
 
-exports.getSettingById = async (req, res) => {
+/* -------------------- GET BY ID -------------------- */
+exports.getSmsPostSettingById = async (req, res) => {
   try {
-    const setting = await Setting.findByPk(req.params.id);
-    if (!setting) return res.status(404).json({ error: "Setting not found" });
-    res.json(setting);
+    const setting = await SmsPostSettings.findById(req.params.id);
+    if (!setting)
+      return res.status(404).json({ message: "Setting not found" });
+    res.status(200).json(setting);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Error fetching setting", error });
   }
 };
 
-exports.createSetting = async (req, res) => {
+/* -------------------- CREATE -------------------- */
+exports.createSmsPostSetting = async (req, res) => {
   try {
-    const newSetting = await Setting.create(req.body);
+    const newSetting = new SmsPostSettings(req.body);
+    await newSetting.save();
     res.status(201).json(newSetting);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: "Failed to create setting", error });
   }
 };
 
-exports.updateSetting = async (req, res) => {
+/* -------------------- UPDATE -------------------- */
+exports.updateSmsPostSetting = async (req, res) => {
   try {
-    const setting = await Setting.findByPk(req.params.id);
-    if (!setting) return res.status(404).json({ error: "Setting not found" });
-    await setting.update(req.body);
-    res.json(setting);
+    const updatedSetting = await SmsPostSettings.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedSetting)
+      return res.status(404).json({ message: "Setting not found" });
+    res.status(200).json(updatedSetting);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    res.status(400).json({ message: "Failed to update setting", error });
   }
 };
 
-exports.deleteSetting = async (req, res) => {
+/* -------------------- DELETE -------------------- */
+exports.deleteSmsPostSetting = async (req, res) => {
   try {
-    const setting = await Setting.findByPk(req.params.id);
-    if (!setting) return res.status(404).json({ error: "Setting not found" });
-    await setting.destroy();
-    res.json({ message: "Setting deleted successfully" });
+    const deleted = await SmsPostSettings.findByIdAndDelete(req.params.id);
+    if (!deleted)
+      return res.status(404).json({ message: "Setting not found" });
+    res.status(200).json({ message: "Setting deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ message: "Failed to delete setting", error });
   }
 };
