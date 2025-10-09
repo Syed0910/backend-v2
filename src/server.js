@@ -132,9 +132,12 @@ app.use("/api/voucher-cards", require("./routes/voucherCard.routes"));
 app.use("/api/vouchers", require("./routes/vouchers.routes"));
 app.use("/api/nas", require("./routes/nas.routes"));
 app.use("/api/radgroupreply", require("./routes/radGroupReply.routes"));
-app.use("/api/users", require("./routes/user.routes")); // ✅ Users CRUD API
 
+app.use("/api/job-batches", require("./routes/jobBatch.routes"));
+
+app.use("/api/users", require("./routes/user.routes")); 
 // ------------------------- Start Server -------------------------
+
 
 const startServer = async () => {
   try {
