@@ -28,7 +28,7 @@ const Setting = sequelize.define("Setting", {
     allowNull: false,
   },
   payload: {
-    type: DataTypes.JSON,
+    type: DataTypes.JSON, // ✅ JSON type ensures Sequelize auto-parses if stored as JSON
     allowNull: false,
   },
   created_at: {

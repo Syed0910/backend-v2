@@ -1,62 +1,116 @@
-const SmsPostSettings = require("../models/smsPostSettings.model");
+const Setting = require("../models/settings.model");
 
-/* -------------------- GET ALL -------------------- */
-exports.getAllSmsPostSettings = async (req, res) => {
+/* -------------------- GET ALL SETTINGS -------------------- */
+// Supports filtering by group, e.g. GET /api/settings?group=general
+exports.getAllSettings = async (req, res) => {
   try {
-    const settings = await SmsPostSettings.find();
-    res.status(200).json(settings);
+    const where = {};
+    if (req.query.group) {
+      where.group = req.query.group;
+    }
+
+    const settings = await Setting.findAll({ where });
+
+    // If no data found, return an empty array
+    if (!settings || settings.length === 0) {
+      return res.json([]);
+    }
+
+    // Parse payload safely if stored as JSON string
+    const parsed = settings.map((s) => {
+      let payload = s.payload;
+      try {
+        if (typeof payload === "string") payload = JSON.parse(payload);
+      } catch {
+        /* ignore parse error */
+      }
+      return { ...s.toJSON(), payload };
+    });
+
+    res.json(parsed);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch settings", error });
+    console.error("❌ Error fetching settings:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-/* -------------------- GET BY ID -------------------- */
-exports.getSmsPostSettingById = async (req, res) => {
+/* -------------------- GET SETTING BY ID -------------------- */
+exports.getSettingById = async (req, res) => {
   try {
-    const setting = await SmsPostSettings.findById(req.params.id);
-    if (!setting)
-      return res.status(404).json({ message: "Setting not found" });
-    res.status(200).json(setting);
+    const setting = await Setting.findByPk(req.params.id);
+    if (!setting) return res.status(404).json({ error: "Setting not found" });
+
+    let payload = setting.payload;
+    try {
+      if (typeof payload === "string") payload = JSON.parse(payload);
+    } catch {
+      /* ignore */
+    }
+
+    res.json({ ...setting.toJSON(), payload });
   } catch (error) {
-    res.status(500).json({ message: "Error fetching setting", error });
+    console.error("❌ Error fetching setting by ID:", error);
+    res.status(500).json({ error: error.message });
   }
 };
 
-/* -------------------- CREATE -------------------- */
-exports.createSmsPostSetting = async (req, res) => {
+/* -------------------- CREATE NEW SETTING -------------------- */
+exports.createSetting = async (req, res) => {
   try {
-    const newSetting = new SmsPostSettings(req.body);
-    await newSetting.save();
+    const data = { ...req.body };
+
+    // Auto-stringify payload if it’s an object
+    if (data.payload && typeof data.payload === "object") {
+      data.payload = JSON.stringify(data.payload);
+    }
+
+    const newSetting = await Setting.create(data);
     res.status(201).json(newSetting);
   } catch (error) {
-    res.status(400).json({ message: "Failed to create setting", error });
+    console.error("❌ Error creating setting:", error);
+    res.status(400).json({ error: error.message });
   }
 };
 
-/* -------------------- UPDATE -------------------- */
-exports.updateSmsPostSetting = async (req, res) => {
+/* -------------------- UPDATE EXISTING SETTING -------------------- */
+exports.updateSetting = async (req, res) => {
   try {
-    const updatedSetting = await SmsPostSettings.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!updatedSetting)
-      return res.status(404).json({ message: "Setting not found" });
-    res.status(200).json(updatedSetting);
+    const setting = await Setting.findByPk(req.params.id);
+    if (!setting) return res.status(404).json({ error: "Setting not found" });
+
+    const data = { ...req.body };
+    if (data.payload && typeof data.payload === "object") {
+      data.payload = JSON.stringify(data.payload);
+    }
+
+    await setting.update(data);
+
+    let updated = setting.toJSON();
+    try {
+      if (typeof updated.payload === "string") {
+        updated.payload = JSON.parse(updated.payload);
+      }
+    } catch {
+      /* ignore */
+    }
+
+    res.json(updated);
   } catch (error) {
-    res.status(400).json({ message: "Failed to update setting", error });
+    console.error("❌ Error updating setting:", error);
+    res.status(400).json({ error: error.message });
   }
 };
 
-/* -------------------- DELETE -------------------- */
-exports.deleteSmsPostSetting = async (req, res) => {
+/* -------------------- DELETE SETTING -------------------- */
+exports.deleteSetting = async (req, res) => {
   try {
-    const deleted = await SmsPostSettings.findByIdAndDelete(req.params.id);
-    if (!deleted)
-      return res.status(404).json({ message: "Setting not found" });
-    res.status(200).json({ message: "Setting deleted successfully" });
+    const setting = await Setting.findByPk(req.params.id);
+    if (!setting) return res.status(404).json({ error: "Setting not found" });
+
+    await setting.destroy();
+    res.json({ message: "Setting deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Failed to delete setting", error });
+    console.error("❌ Error deleting setting:", error);
+    res.status(500).json({ error: error.message });
   }
 };
