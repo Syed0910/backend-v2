@@ -1,34 +1,84 @@
+// models/ActivityLog.model.js
 const { DataTypes } = require("sequelize");
 const sequelize = require("../config/database");
 
-const Session = sequelize.define("Session", {
-  id: {
-    type: DataTypes.STRING,
-    primaryKey: true,
+const ActivityLog = sequelize.define(
+  "ActivityLog",
+  {
+    id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    log_name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    subject_type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    event: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    subject_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+    },
+    subject_username: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    causer_type: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    causer_id: {
+      type: DataTypes.BIGINT.UNSIGNED,
+      allowNull: true,
+    },
+    causer_username: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    properties: {
+      type: DataTypes.JSON,
+      allowNull: true,
+    },
+    ip_address: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    batch_uuid: {
+      type: DataTypes.STRING(36),
+      allowNull: true,
+    },
+    isp_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    branch_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
-  user_id: {
-    type: DataTypes.BIGINT.UNSIGNED,
-    allowNull: true,
-  },
-  ip_address: {
-    type: DataTypes.STRING(45),
-    allowNull: true,
-  },
-  user_agent: {
-    type: DataTypes.TEXT,
-    allowNull: true,
-  },
-  payload: {
-    type: DataTypes.TEXT,
-    allowNull: false,
-  },
-  last_activity: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
-}, {
-  tableName: "sessions",
-  timestamps: false,
-});
+  {
+    tableName: "activity_log",
+    timestamps: false, // ✅ disable Sequelize auto timestamps
+  }
+);
 
-module.exports = Session;
+module.exports = ActivityLog;

@@ -1,25 +1,31 @@
-
 const ImportFailed = require("../models/importFailed.model");
 
+// ✅ Get latest 100 records
 exports.getAll = async (req, res) => {
   try {
-    const failedImports = await ImportFailed.findAll();
+    const failedImports = await ImportFailed.findAll({
+      order: [["id", "DESC"]], // sort by newest first
+      limit: 100,              // only 100 latest records
+    });
     res.json(failedImports);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+// ✅ Get record by ID
 exports.getById = async (req, res) => {
   try {
     const record = await ImportFailed.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ message: "ImportFailed record not found" });
+    if (!record)
+      return res.status(404).json({ message: "ImportFailed record not found" });
     res.json(record);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
+// ✅ Create new record
 exports.create = async (req, res) => {
   try {
     const newRecord = await ImportFailed.create(req.body);
@@ -29,10 +35,12 @@ exports.create = async (req, res) => {
   }
 };
 
+// ✅ Update record
 exports.update = async (req, res) => {
   try {
     const record = await ImportFailed.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ message: "ImportFailed record not found" });
+    if (!record)
+      return res.status(404).json({ message: "ImportFailed record not found" });
 
     await record.update(req.body);
     res.json(record);
@@ -41,10 +49,12 @@ exports.update = async (req, res) => {
   }
 };
 
+// ✅ Delete record
 exports.remove = async (req, res) => {
   try {
     const record = await ImportFailed.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ message: "ImportFailed record not found" });
+    if (!record)
+      return res.status(404).json({ message: "ImportFailed record not found" });
 
     await record.destroy();
     res.json({ message: "Deleted successfully" });
