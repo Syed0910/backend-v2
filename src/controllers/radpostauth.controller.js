@@ -1,21 +1,18 @@
-const Radpostauth = require('../models/Radpostauth.model');
-const { Op } = require('sequelize');
+const Radpostauth = require("../models/Radpostauth.model");
+const { Op } = require("sequelize");
 
-// ✅ GET all records (with optional ?limit=100)
+// ✅ GET latest 100 records (always limited)
 exports.getAllRadpostauth = async (req, res) => {
   try {
-    // If frontend sends ?limit=100 → only fetch latest 100 entries
-    const limit = parseInt(req.query.limit, 10) || null;
-
     const records = await Radpostauth.findAll({
-      order: [['authdate', 'DESC']], // latest first
-      ...(limit ? { limit } : {}),   // apply limit only if provided
+      order: [["authdate", "DESC"]], // latest first
+      limit: 100, // 🚀 Always limit to 100
     });
 
     res.json(records);
   } catch (err) {
-    console.error('Error fetching radpostauth:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching radpostauth:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -24,41 +21,42 @@ exports.getRadpostauthById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const records = await Radpostauth.findAll({
-      where: { id },
-    });
+    const record = await Radpostauth.findByPk(id);
 
-    if (!records.length) {
-      return res.status(404).json({ error: 'No records found for this ID' });
+    if (!record) {
+      return res.status(404).json({ error: "No record found for this ID" });
     }
 
-    res.json(records);
+    res.json(record);
   } catch (err) {
-    console.error('Error fetching radpostauth by ID:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching radpostauth by ID:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// ✅ GET records by username
+// ✅ GET latest 100 records by username
 exports.getRadpostauthByUsername = async (req, res) => {
   try {
     const { username } = req.params;
     if (!username) {
-      return res.status(400).json({ error: 'Username is required' });
+      return res.status(400).json({ error: "Username is required" });
     }
 
     const records = await Radpostauth.findAll({
       where: { username },
-      order: [['authdate', 'DESC']],
+      order: [["authdate", "DESC"]],
+      limit: 100, // 🚀 Also limit per user
     });
 
     if (!records.length) {
-      return res.status(404).json({ error: 'No records found for this username' });
+      return res
+        .status(404)
+        .json({ error: "No records found for this username" });
     }
 
     res.json(records);
   } catch (err) {
-    console.error('Error fetching radpostauth by username:', err);
-    res.status(500).json({ error: 'Internal server error' });
+    console.error("Error fetching radpostauth by username:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };

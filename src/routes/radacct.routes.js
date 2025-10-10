@@ -1,12 +1,20 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const radacctController = require('../controllers/radacct.controller');
+const controller = require("../controllers/radacct.controller");
 
-router.get('/', radacctController.getAllRadacct);
-router.get('/:id', radacctController.getRadacctById);
-router.get('/username/:username', radacctController.getLatestRadacctByUsername); // ✅ new route
-router.post('/', radacctController.createRadacct);
-router.put('/:id', radacctController.updateRadacct);
-router.delete('/:id', radacctController.deleteRadacct);
+// GET /api/radacct?limit=100 → get latest session logs
+router.get("/", controller.getAllRadacctLogs);
+
+// GET /api/radacct/:id → get a single session log by ID
+router.get("/:id", controller.getRadacctLogById);
+
+// POST /api/radacct → create a new log (optional, mostly for testing)
+router.post("/", controller.createRadacctLog);
+
+// PUT /api/radacct/:id → update a log
+router.put("/:id", controller.updateRadacctLog);
+
+// DELETE /api/radacct/:id → delete a log
+router.delete("/:id", controller.deleteRadacctLog);
 
 module.exports = router;

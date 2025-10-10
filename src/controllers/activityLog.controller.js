@@ -1,53 +1,52 @@
-const ActivityLog = require("../models/activityLog.model");
+const ActivityLog = require("../models/ActivityLog.model");
 
-exports.getAll = async (req, res) => {
+// Fetch latest activity logs with optional limit query param
+exports.getAllActivityLogs = async (req, res) => {
   try {
-    const logs = await ActivityLog.findAll();
-    res.json(logs);
+    const limit = parseInt(req.query.limit) || 100;
+
+    const logs = await ActivityLog.findAll({
+      order: [["id", "DESC"]],
+      limit,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: logs,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching Activity Logs:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch activity logs",
+      error: error.message,
+    });
   }
 };
 
-exports.getById = async (req, res) => {
+// Fetch single log by ID
+exports.getActivityLogById = async (req, res) => {
   try {
-    const log = await ActivityLog.findByPk(req.params.id);
-    if (!log) return res.status(404).json({ message: "Not found" });
-    res.json(log);
+    const { id } = req.params;
+    const log = await ActivityLog.findByPk(id);
+
+    if (!log) {
+      return res.status(404).json({
+        success: false,
+        message: "Activity log not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: log,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.create = async (req, res) => {
-  try {
-    const newLog = await ActivityLog.create(req.body);
-    res.status(201).json(newLog);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.update = async (req, res) => {
-  try {
-    const log = await ActivityLog.findByPk(req.params.id);
-    if (!log) return res.status(404).json({ message: "Not found" });
-
-    await log.update(req.body);
-    res.json(log);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-exports.remove = async (req, res) => {
-  try {
-    const log = await ActivityLog.findByPk(req.params.id);
-    if (!log) return res.status(404).json({ message: "Not found" });
-
-    await log.destroy();
-    res.json({ message: "Deleted" });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching Activity Log by ID:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch activity log",
+      error: error.message,
+    });
   }
 };
