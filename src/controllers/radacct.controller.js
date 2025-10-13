@@ -122,3 +122,39 @@ exports.deleteRadacctLog = async (req, res) => {
     });
   }
 };
+
+// ✅ NEW FUNCTION — Get logs by Username
+exports.getRadacctLogsByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        message: "Username parameter is required",
+      });
+    }
+
+    const logs = await Radacct.findAll({
+      where: { username },
+      order: [["acctstarttime", "DESC"]],
+      limit: 200, // optional, you can adjust
+    });
+
+    if (!logs || logs.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No session logs found for username "${username}"`,
+      });
+    }
+
+    res.status(200).json({ success: true, data: logs });
+  } catch (error) {
+    console.error("Error fetching radacct logs by username:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch radacct logs by username",
+      error: error.message,
+    });
+  }
+};
