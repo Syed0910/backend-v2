@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/activityLog.controller");
+const activityLogController = require("../controllers/activityLog.controller");
 
-router.get("/", controller.getAll);
-router.get("/:id", controller.getById);
-router.post("/", controller.create);
-router.put("/:id", controller.update);
-router.delete("/:id", controller.remove);
+// GET /api/activity-log?limit=100
+router.get("/", activityLogController.getAllActivityLogs);
+
+// GET /api/activity-log/:id
+router.get("/:id", activityLogController.getActivityLogById);
 
 module.exports = router;

@@ -1,53 +1,73 @@
 const AutoRenewFailedLog = require("../models/autoRenewFailedLog.model");
 
+// GET /api/auto-renew-failed-logs?limit=100
 exports.getAll = async (req, res) => {
   try {
-    const logs = await AutoRenewFailedLog.findAll();
+    const limit = parseInt(req.query.limit, 10) || null;
+
+    const logs = await AutoRenewFailedLog.findAll({
+      limit: limit,
+      order: [["created_at", "DESC"]],
+    });
+
     res.json(logs);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching auto-renew-failed-logs:", error);
+    res.status(500).json({ error: "Failed to fetch logs." });
   }
 };
 
+// GET /api/auto-renew-failed-logs/:id
 exports.getById = async (req, res) => {
   try {
     const log = await AutoRenewFailedLog.findByPk(req.params.id);
-    if (!log) return res.status(404).json({ message: "Not found" });
+
+    if (!log) return res.status(404).json({ message: "Log not found." });
+
     res.json(log);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error fetching log by ID:", error);
+    res.status(500).json({ error: "Failed to fetch log." });
   }
 };
 
+// POST /api/auto-renew-failed-logs
 exports.create = async (req, res) => {
   try {
     const newLog = await AutoRenewFailedLog.create(req.body);
     res.status(201).json(newLog);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error creating log:", error);
+    res.status(500).json({ error: "Failed to create log." });
   }
 };
 
+// PUT /api/auto-renew-failed-logs/:id
 exports.update = async (req, res) => {
   try {
     const log = await AutoRenewFailedLog.findByPk(req.params.id);
-    if (!log) return res.status(404).json({ message: "Not found" });
+
+    if (!log) return res.status(404).json({ message: "Log not found." });
 
     await log.update(req.body);
     res.json(log);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error updating log:", error);
+    res.status(500).json({ error: "Failed to update log." });
   }
 };
 
+// DELETE /api/auto-renew-failed-logs/:id
 exports.remove = async (req, res) => {
   try {
     const log = await AutoRenewFailedLog.findByPk(req.params.id);
-    if (!log) return res.status(404).json({ message: "Not found" });
+
+    if (!log) return res.status(404).json({ message: "Log not found." });
 
     await log.destroy();
-    res.json({ message: "Deleted" });
+    res.json({ message: "Log deleted successfully." });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error deleting log:", error);
+    res.status(500).json({ error: "Failed to delete log." });
   }
 };

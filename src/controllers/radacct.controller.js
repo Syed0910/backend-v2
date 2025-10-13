@@ -1,80 +1,160 @@
-const Radacct = require('../models/radacct.model');
+const Radacct = require("../models/Radacct.model");
 
-// GET all radacct records
-exports.getAllRadacct = async (req, res) => {
+// ✅ Get all logs (with optional limit, defaults to 100)
+exports.getAllRadacctLogs = async (req, res) => {
   try {
-    const records = await Radacct.findAll();
-    res.json(records);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// GET radacct record by ID
-exports.getRadacctById = async (req, res) => {
-  try {
-    const record = await Radacct.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ error: 'Record not found' });
-    res.json(record);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-};
-
-// ✅ GET latest radacct record by username
-exports.getLatestRadacctByUsername = async (req, res) => {
-  try {
-    const { username } = req.params;
-    const record = await Radacct.findOne({
-      where: { username },
-      order: [["acctstarttime", "DESC"]] // or ["radacctid", "DESC"]
+    const limit = parseInt(req.query.limit) || 100;
+    const logs = await Radacct.findAll({
+      order: [["radacctid", "DESC"]],
+      limit,
     });
 
-    if (!record) return res.status(404).json({ error: 'No session found for this user' });
-    res.json(record);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(200).json({ success: true, data: logs });
+  } catch (error) {
+    console.error("Error fetching radacct logs:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch radacct logs",
+      error: error.message,
+    });
   }
 };
 
-// CREATE new radacct record
-exports.createRadacct = async (req, res) => {
+// ✅ Get a single log by ID
+exports.getRadacctLogById = async (req, res) => {
   try {
-    const newRecord = await Radacct.create(req.body);
-    res.status(201).json(newRecord);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    const { id } = req.params;
+    const log = await Radacct.findByPk(id);
+
+    if (!log) {
+      return res.status(404).json({
+        success: false,
+        message: `No radacct log found with ID ${id}`,
+      });
+    }
+
+    res.status(200).json({ success: true, data: log });
+  } catch (error) {
+    console.error("Error fetching radacct log by ID:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch radacct log",
+      error: error.message,
+    });
   }
 };
 
-// UPDATE radacct record by ID
-exports.updateRadacct = async (req, res) => {
+// ✅ Create a new log (manually, not typical)
+exports.createRadacctLog = async (req, res) => {
   try {
-    const record = await Radacct.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ error: 'Record not found' });
+    const newLog = await Radacct.create(req.body);
 
-    await record.update(req.body);
-    res.json(record);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(201).json({
+      success: true,
+      message: "Radacct log created successfully",
+      data: newLog,
+    });
+  } catch (error) {
+    console.error("Error creating radacct log:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create radacct log",
+      error: error.message,
+    });
   }
 };
 
-// DELETE radacct record by ID
-exports.deleteRadacct = async (req, res) => {
+// ✅ Update a log by ID
+exports.updateRadacctLog = async (req, res) => {
   try {
-    const record = await Radacct.findByPk(req.params.id);
-    if (!record) return res.status(404).json({ error: 'Record not found' });
+    const { id } = req.params;
 
-    await record.destroy();
-    res.json({ message: 'Record deleted successfully' });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Internal server error' });
+    const log = await Radacct.findByPk(id);
+    if (!log) {
+      return res.status(404).json({
+        success: false,
+        message: `No radacct log found with ID ${id}`,
+      });
+    }
+
+    await log.update(req.body);
+
+    res.status(200).json({
+      success: true,
+      message: "Radacct log updated successfully",
+      data: log,
+    });
+  } catch (error) {
+    console.error("Error updating radacct log:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update radacct log",
+      error: error.message,
+    });
+  }
+};
+
+// ✅ Delete a log by ID
+exports.deleteRadacctLog = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const log = await Radacct.findByPk(id);
+    if (!log) {
+      return res.status(404).json({
+        success: false,
+        message: `No radacct log found with ID ${id}`,
+      });
+    }
+
+    await log.destroy();
+
+    res.status(200).json({
+      success: true,
+      message: "Radacct log deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting radacct log:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete radacct log",
+      error: error.message,
+    });
+  }
+};
+
+// ✅ NEW FUNCTION — Get logs by Username
+exports.getRadacctLogsByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    if (!username) {
+      return res.status(400).json({
+        success: false,
+        message: "Username parameter is required",
+      });
+    }
+
+    const logs = await Radacct.findAll({
+      where: { username },
+      order: [["acctstarttime", "DESC"]],
+      limit: 200, // optional, you can adjust
+    });
+
+    if (!logs || logs.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: `No session logs found for username "${username}"`,
+      });
+    }
+
+    res.status(200).json({ success: true, data: logs });
+  } catch (error) {
+    console.error("Error fetching radacct logs by username:", error.message);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch radacct logs by username",
+      error: error.message,
+    });
   }
 };
