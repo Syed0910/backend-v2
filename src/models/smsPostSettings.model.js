@@ -31,14 +31,16 @@ const SmsPostSetting = sequelize.define("SmsPostSetting", {
     type: DataTypes.INTEGER,
     allowNull: true,
   },
-  created_at: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  }
+ created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
 }, {
   tableName: "sms_post_settings",
   timestamps: false,
