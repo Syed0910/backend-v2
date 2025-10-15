@@ -20,7 +20,7 @@ app.use(express.json());
 // Configure CORS to allow requests from frontend
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5174", // configurable frontend URL
+    origin: process.env.FRONTEND_URL || "http://localhost:5173", // configurable frontend URL
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
