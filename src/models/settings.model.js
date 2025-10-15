@@ -31,14 +31,16 @@ const Setting = sequelize.define("Setting", {
     type: DataTypes.JSON, // ✅ JSON type ensures Sequelize auto-parses if stored as JSON
     allowNull: false,
   },
-  created_at: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
-  updated_at: {
-    type: DataTypes.DATE,
-    allowNull: true,
-  },
+    created_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+    updated_at: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
 }, {
   tableName: "settings",
   timestamps: false,
