@@ -92,7 +92,7 @@ app.use("/api/nas-details", require("./routes/nasDetails.routes"));
 app.use("/api/nas-groups", require("./routes/nasGroups.routes"));
 app.use("/api/notices", require("./routes/notice.routes"));
 app.use("/api/otps", require("./routes/otp.routes"));
-app.use("/api/package-accounting", require("./routes/packageAccounting.routes"))
+app.use("/api/package-accounting", require("./routes/packageAccounting.routes"));
 app.use("/api/package-extra-fees", require("./routes/packageExtraFee.routes"));
 app.use("/api/password-reset-tokens", require("./routes/passwordResetToken.routes"));
 app.use("/api/payments", require("./routes/payments.routes"));

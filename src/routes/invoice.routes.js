@@ -5,6 +5,7 @@ const controller = require("../controllers/invoice.controller");
 // Get all invoices
 router.get("/", controller.getAll);
 
+
 // ✅ Get invoices by subscriber ID
 router.get("/subscriber/:id", controller.getBySubscriberId);
 
@@ -12,6 +13,7 @@ router.get("/subscriber/:id", controller.getBySubscriberId);
 router.get("/:id", controller.getById);
 
 // Create a new invoice
+
 router.post("/", controller.create);
 
 // Update an invoice by ID
